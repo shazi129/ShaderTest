@@ -2,7 +2,8 @@
 #include "FirstShader/FirstShader.h"
 #include "Common/TestShaderUtils.h"
 
-static void FirstShader_RenderThread(
+static void FirstShader_RenderThread
+(
 	FRHICommandListImmediate& RHICmdList,
 	FTextureRenderTargetResource* OutTextureRenderTargetResource,
 	ERHIFeatureLevel::Type FeatureLevel,
@@ -45,9 +46,9 @@ static void FirstShader_RenderThread(
 	VertexList.Add(FVector4(-1.0f, -1.0f, 0, 1.0f));
 	VertexList.Add(FVector4(1.0f, -1.0f, 0, 1.0f));
 
-	FRHIResourceCreateInfo CreateInfo;
-	FVertexBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(sizeof(FVector4) * VertexList.Num(), BUF_Volatile, CreateInfo);
-	void* VoidPtr = RHILockVertexBuffer(VertexBufferRHI, 0, sizeof(FVector4) * VertexList.Num(), RLM_WriteOnly);
+	FRHIResourceCreateInfo CreateInfo(TEXT("FirstShader"));
+	FBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(sizeof(FVector4) * VertexList.Num(), BUF_Volatile, CreateInfo);
+	void* VoidPtr = RHILockBuffer(VertexBufferRHI, 0, sizeof(FVector4) * VertexList.Num(), RLM_WriteOnly);
 
 	FVector4* Vertices = (FVector4*)VoidPtr;
 
@@ -55,7 +56,7 @@ static void FirstShader_RenderThread(
 	{
 		Vertices[i] = VertexList[i];
 	}
-	RHIUnlockVertexBuffer(VertexBufferRHI);
+	RHIUnlockBuffer(VertexBufferRHI);
 
 	//顶点索引
 	const uint16 Indices[] = { 0, 1, 2, 2, 1, 3 };
@@ -65,8 +66,8 @@ static void FirstShader_RenderThread(
 	FMemory::Memcpy(IndexBuffer.GetData(), Indices, 6 * sizeof(uint16));
 
 	// Create index buffer. Fill buffer with initial data upon creation
-	FRHIResourceCreateInfo IndexCreateInfo(&IndexBuffer);
-	FIndexBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexBuffer.GetResourceDataSize(), BUF_Static, IndexCreateInfo);
+	FRHIResourceCreateInfo IndexCreateInfo(TEXT("FirstShader_Index"), & IndexBuffer);
+	FBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexBuffer.GetResourceDataSize(), BUF_Static, IndexCreateInfo);
 	
 
 	RHICmdList.SetStreamSource(0, VertexBufferRHI, 0);
