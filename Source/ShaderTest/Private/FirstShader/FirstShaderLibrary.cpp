@@ -13,6 +13,14 @@ static void FirstShader_RenderThread
 {
 	check(IsInRenderingThread());
 
+#if WANTS_DRAW_MESH_EVENTS
+	FString EventName;
+	TextureRenderTargetName.ToString(EventName);
+	SCOPED_DRAW_EVENTF(RHICmdList, SceneCapture, TEXT("FirstShader_RenderThread %s"), *EventName);
+#else
+	SCOPED_DRAW_EVENT(RHICmdList, FirstShader_RenderThread);
+#endif
+
 	FRHITexture2D* RenderTargetTexture = OutTextureRenderTargetResource->GetRenderTargetTexture();
 
 	FRHIRenderPassInfo RPInfo(RenderTargetTexture, ERenderTargetActions::DontLoad_Store, OutTextureRenderTargetResource->TextureRHI);
@@ -46,48 +54,49 @@ static void FirstShader_RenderThread
 	VertexList.Add(FVector4(-1.0f, -1.0f, 0, 1.0f));
 	VertexList.Add(FVector4(1.0f, -1.0f, 0, 1.0f));
 
+	int VertexSize = sizeof(FVector4) * VertexList.Num();
+
 	FRHIResourceCreateInfo CreateInfo(TEXT("FirstShader"));
-	FBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(sizeof(FVector4) * VertexList.Num(), BUF_Volatile, CreateInfo);
-	void* VoidPtr = RHILockBuffer(VertexBufferRHI, 0, sizeof(FVector4) * VertexList.Num(), RLM_WriteOnly);
-
-	FVector4* Vertices = (FVector4*)VoidPtr;
-
-	for (int i = 0; i < VertexList.Num(); i++)
-	{
-		Vertices[i] = VertexList[i];
-	}
+	FBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(VertexSize, BUF_Volatile, CreateInfo);
+	void* VoidPtr = RHILockBuffer(VertexBufferRHI, 0, VertexSize, RLM_WriteOnly);
+	FPlatformMemory::Memcpy(VoidPtr, VertexList.GetData(), VertexSize);
 	RHIUnlockBuffer(VertexBufferRHI);
 
 	//顶点索引
-	const uint16 Indices[] = { 0, 1, 2, 2, 1, 3 };
-	TResourceArray<uint16, INDEXBUFFER_ALIGNMENT> IndexBuffer;
+	TArray<uint16, TInlineAllocator<6> > IndexList({0, 1, 2, 2, 1, 3});
+	int IndexSize = sizeof(uint16) * IndexList.Num();
 
-	IndexBuffer.AddUninitialized(6);
-	FMemory::Memcpy(IndexBuffer.GetData(), Indices, 6 * sizeof(uint16));
-
-	// Create index buffer. Fill buffer with initial data upon creation
-	FRHIResourceCreateInfo IndexCreateInfo(TEXT("FirstShader_Index"), & IndexBuffer);
-	FBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexBuffer.GetResourceDataSize(), BUF_Static, IndexCreateInfo);
-	
+	FBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexSize, BUF_Volatile, CreateInfo);
+	void* VoidPtr2 = RHILockBuffer(IndexBufferRHI, 0, IndexSize, RLM_WriteOnly);
+	FPlatformMemory::Memcpy(VoidPtr2, IndexList.GetData(), IndexSize);
+	RHIUnlockBuffer(IndexBufferRHI);
 
 	RHICmdList.SetStreamSource(0, VertexBufferRHI, 0);
-	RHICmdList.DrawIndexedPrimitive(IndexBufferRHI, 0, 0, 4, 0, 2, 1);
+	RHICmdList.DrawIndexedPrimitive(
+		IndexBufferRHI,
+		/*BaseVertexIndex=*/ 0,
+		/*MinIndex=*/ 0,
+		/*NumVertices=*/ 4 ,
+		/*StartIndex=*/ 0,
+		/*NumPrimitives=*/2, 
+		/*NumInstances=*/ 1
+	);
 
 	RHICmdList.EndRenderPass();
 }
 
-
-void UShaderTestLibrary::FirstShaderDrawRenderTarget(UTextureRenderTarget2D* OutputRenderTarget, AActor* Ac, FLinearColor MyColor)
+void UShaderTestLibrary::FirstShaderDrawRenderTarget(UObject* WorldContextObject, UTextureRenderTarget2D* OutputRenderTarget, FLinearColor MyColor)
 {
 	check(IsInGameThread());
 
-	if (!OutputRenderTarget)
+	if (!OutputRenderTarget || !WorldContextObject)
 	{
+		UE_LOG(LogTemp, Error, TEXT("UShaderTestLibrary::FirstShaderDrawRenderTarget, param error"));
 		return;
 	}
 
 	FTextureRenderTargetResource* TextureRenderTargetResource = OutputRenderTarget->GameThread_GetRenderTargetResource();
-	UWorld* World = Ac->GetWorld();
+	UWorld* World = WorldContextObject->GetWorld();
 	ERHIFeatureLevel::Type FeatureLevel = World->Scene->GetFeatureLevel();
 	FName TextureRenderTargetName = OutputRenderTarget->GetFName();
 	ENQUEUE_RENDER_COMMAND(CaptureCommand)(

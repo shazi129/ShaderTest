@@ -1,26 +1,27 @@
-// 
-// #include "ShaderTestLibrary.h"
-// #include "TextureShader/TestTextureShader.h"
-// 
-// class FMyTextureVertexDeclaration : public FRenderResource
-// {
-// public:
-// 	FVertexDeclarationRHIRef VertexDeclarationRHI;
-// 
-// 	virtual void InitRHI() override
-// 	{
-// 		FVertexDeclarationElementList Elements;
-// 		uint32 Stride = sizeof(FMyTextureVertex);
-// 		Elements.Add(FVertexElement(0, STRUCT_OFFSET(FMyTextureVertex, Position), VET_Float4, 0, Stride));
-// 		Elements.Add(FVertexElement(0, STRUCT_OFFSET(FMyTextureVertex, UV), VET_Float2, 1, Stride));
-// 		VertexDeclarationRHI = RHICreateVertexDeclaration(Elements);
-// 	}
-// 
-// 	virtual void ReleaseRHI() override
-// 	{
-// 		VertexDeclarationRHI.SafeRelease();
-// 	}
-// };
+
+#include "ShaderTestLibrary.h"
+#include "TextureShader/TestTextureShader.h"
+
+class FMyTextureVertexDeclaration : public FRenderResource
+{
+public:
+	FVertexDeclarationRHIRef VertexDeclarationRHI;
+
+	virtual void InitRHI() override
+	{
+		FVertexDeclarationElementList Elements;
+		uint32 Stride = sizeof(FMyTextureVertex);
+		Elements.Add(FVertexElement(0, STRUCT_OFFSET(FMyTextureVertex, Position), VET_Float4, 0, Stride));
+		Elements.Add(FVertexElement(0, STRUCT_OFFSET(FMyTextureVertex, UV), VET_Float2, 1, Stride));
+		VertexDeclarationRHI = RHICreateVertexDeclaration(Elements);
+	}
+
+	virtual void ReleaseRHI() override
+	{
+		VertexDeclarationRHI.SafeRelease();
+	}
+};
+
 // 
 // static void DrawTestTextureShaderRenderTarget_RenderThread(
 // 	FRHICommandListImmediate& RHICmdList,
