@@ -35,7 +35,7 @@ class ULensDistortionBlueprintLibrary : public UBlueprintFunctionLibrary
 	 * @param OutputMultiply The multiplication factor applied on the displacement.
 	 * @param OutputAdd Value added to the multiplied displacement before storing into the output render target.
 	 */
-	UFUNCTION(BlueprintCallable,  Category = "Foo | Lens Distortion", meta = (DeprecatedFunction, DeprecationMessage = "The LensDistortion plugin is deprecated. Please update your project to use the features of the CameraCalibration plugin.", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable,  Category = "Foo | Lens Distortion", meta = (WorldContext = "WorldContextObject"))
 	static void DrawUVDisplacementToRenderTarget(
 		const UObject* WorldContextObject,
 		const FFooCameraModel& CameraModel,
