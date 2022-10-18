@@ -9,5 +9,5 @@ void MainVS(in float4 InPosition : ATTRIBUTE0, out float4 OutPosition : SV_POSIT
 
 void MainPS(out float4 OutColor : SV_Target0)
 {
-    OutColor = float4(1.0, 0.0, 0.0, 1.0);
+    OutColor = SimpleColor;
 }
