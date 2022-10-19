@@ -57,11 +57,11 @@ public:
 // 	GraphicsPSOInit.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
 // 	SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit);
 // 
-// 	//ÉèÖÃÊÓ¿Ú
+// 	//ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
 // 	FIntPoint DrawTargetResolution(OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY());
 // 	RHICmdList.SetViewport(0, 0, 0.0f, DrawTargetResolution.X, DrawTargetResolution.Y, 1.0f);
 // 
-// 	//ÉèÖÃ²ÎÊý
+// 	//ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
 // 	FSimpleUniformStruct SimpleUniformStruct;
 // 	SimpleUniformStruct.ColorOne = StructData.ColorOne;
 // 	SimpleUniformStruct.ColorTwo = StructData.ColorTwo;
@@ -75,7 +75,7 @@ public:
 // 	Parameters.SimpleUniformStruct = TUniformBufferRef<FSimpleUniformStruct>::CreateUniformBufferImmediate(SimpleUniformStruct, UniformBuffer_MultiFrame);
 // 	SetShaderParameters(RHICmdList, PixelShader, PixelShader.GetPixelShader(), Parameters);
 // 
-// 	//¶¥µãºÍUIÐÅÏ¢
+// 	//ï¿½ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½Ï¢
 // 	TArray<FMyTextureVertex> VertexList;
 // 	VertexList.Add(FMyTextureVertex(FVector4(1, 1, 0, 1), FVector2D(1, 1)));
 // 	VertexList.Add(FMyTextureVertex(FVector4(-1, 1, 0, 1), FVector2D(0, 1)));
@@ -92,10 +92,10 @@ public:
 // 	RHICmdList.EndRenderPass();
 // }
 // 
-// void UShaderTestLibrary::DrawTestTextureShaderRenderTarget(AActor* ContextActor,  //ÄÜ»ñÈ¡WorldµÄActor
-// 	UTextureRenderTarget2D* RenderTarget,  //äÖÈ¾Ä¿±ê
-// 	FTestTextureShaderStructData StructData,          //ÑÕÉ«
-// 	UTexture* Texture                  //ÎÆÀí
+// void UShaderTestLibrary::DrawTestTextureShaderRenderTarget(AActor* ContextActor,  //ï¿½Ü»ï¿½È¡Worldï¿½ï¿½Actor
+// 	UTextureRenderTarget2D* RenderTarget,  //ï¿½ï¿½È¾Ä¿ï¿½ï¿½
+// 	FTestTextureShaderStructData StructData,          //ï¿½ï¿½É«
+// 	UTexture* Texture                  //ï¿½ï¿½ï¿½ï¿½
 // )
 // {
 // 	check(IsInGameThread());

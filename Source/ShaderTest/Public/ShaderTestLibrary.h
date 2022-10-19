@@ -1,7 +1,7 @@
 #pragma once
 
 /**
-*   所有外部接口  
+*   锟斤拷锟斤拷锟解部锟接匡拷  
 */
 
 #include "Common/MyShaderTypes.h"
@@ -20,10 +20,10 @@ public:
 		static void FirstShaderDrawRenderTarget(UObject* WorldContextObject, UTextureRenderTarget2D* OutputRenderTarget, FLinearColor MyColor);
 
 // 	UFUNCTION(BlueprintCallable, Category = "ShaderTestPlugin")
-// 		static void DrawTestTextureShaderRenderTarget(AActor* ContextActor,  //能获取World的Actor
-// 			UTextureRenderTarget2D* RenderTarget,  //渲染目标
-// 			FTestTextureShaderStructData StructData,          //颜色
-// 			UTexture* Texture                  //纹理
+// 		static void DrawTestTextureShaderRenderTarget(AActor* ContextActor,  //锟杰伙拷取World锟斤拷Actor
+// 			UTextureRenderTarget2D* RenderTarget,  //锟斤拷染目锟斤拷
+// 			FTestTextureShaderStructData StructData,          //锟斤拷色
+// 			UTexture* Texture                  //锟斤拷锟斤拷
 // 		);
 // 
 // 	UFUNCTION(BlueprintCallable, Category = "ShaderTestPlugin")
