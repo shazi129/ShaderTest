@@ -26,4 +26,5 @@ public:
 
 	//template<typename TShaderRHIParamRef>
 	void SetColor(FRHICommandListImmediate& RHICmdList, const FPixelShaderRHIRef ShaderRHI, const FLinearColor& MyColor);
+	void SetColor(FRHICommandList& RHICmdList, const FLinearColor& InColor);
 };
