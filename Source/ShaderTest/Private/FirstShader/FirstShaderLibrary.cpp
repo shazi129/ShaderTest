@@ -67,29 +67,26 @@ static void FirstShader_RenderThread(
 		FPlatformMemory::Memcpy(VoidPtr, VertexList.GetData(), VertexSize);
 		RHIUnlockVertexBuffer(VertexBufferRHI);
 		RHICmdList.SetStreamSource(0, VertexBufferRHI, 0);
-		VertexBufferRHI.SafeRelease();
-
-		RHICmdList.DrawPrimitive(0, 1, 1);
 
 		//顶点索引
-// 		TArray<uint16, TInlineAllocator<6> > IndexList({ 0, 1, 2, 2, 1, 3 });
-// 			int IndexSize = sizeof(uint16) * IndexList.Num();
-// 	
-// 			FIndexBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexSize, BUF_Volatile, CreateInfo);
-// 			void* VoidPtr2 = RHILockIndexBuffer(IndexBufferRHI, 0, IndexSize, RLM_WriteOnly);
-// 			FPlatformMemory::Memcpy(VoidPtr2, IndexList.GetData(), IndexSize);
-// 			RHIUnlockIndexBuffer(IndexBufferRHI);
-// 	
-// 			RHICmdList.DrawIndexedPrimitive(
-// 				IndexBufferRHI,
-// 				0, /*BaseVertexIndex*/
-// 				0, /*MinIndex*/
-// 				4, /*NumVertices*/
-// 				0, /*StartIndex*/
-// 				2, /*NumPrimitives*/
-// 				1  /*NumInstances*/
-// 			);
-// 		}
+		TArray<uint16, TInlineAllocator<6> > IndexList({ 0, 1, 2, 2, 1, 3 });
+			int IndexSize = sizeof(uint16) * IndexList.Num();
+	
+			FIndexBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexSize, BUF_Volatile, CreateInfo);
+			void* VoidPtr2 = RHILockIndexBuffer(IndexBufferRHI, 0, IndexSize, RLM_WriteOnly);
+			FPlatformMemory::Memcpy(VoidPtr2, IndexList.GetData(), IndexSize);
+			RHIUnlockIndexBuffer(IndexBufferRHI);
+	
+			RHICmdList.DrawIndexedPrimitive(
+				IndexBufferRHI,
+				0, /*BaseVertexIndex*/
+				0, /*MinIndex*/
+				4, /*NumVertices*/
+				0, /*StartIndex*/
+				2, /*NumPrimitives*/
+				1  /*NumInstances*/
+			);
+		}
 
 	RHICmdList.EndRenderPass();
 	RHICmdList.Transition(FRHITransitionInfo(RenderTargetTexture, ERHIAccess::RTV, ERHIAccess::SRVMask));
