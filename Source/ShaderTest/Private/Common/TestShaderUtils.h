@@ -23,9 +23,9 @@ class UTestShaderUtils : public UObject
 
 public:
 
-	static FVertexBufferRHIRef CreateVertexBuffer(const TArray<FVector4>& VertexList);
+	static FBufferRHIRef CreateVertexBuffer(const TArray<FVector4>& VertexList);
 
-	static FVertexBufferRHIRef CreateVertexBuffer(const TArray<FMyTextureVertex>& VertexList);
+	static FBufferRHIRef CreateVertexBuffer(const TArray<FMyTextureVertex>& VertexList);
 
-	static FIndexBufferRHIRef CreateIndexBuffer(const uint16* Indices, uint16 NumIndices);
+	static FBufferRHIRef CreateIndexBuffer(const uint16* Indices, uint16 NumIndices);
 };

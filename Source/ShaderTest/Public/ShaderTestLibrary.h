@@ -17,7 +17,8 @@ class UShaderTestLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "ShaderTestPlugin", meta = (DefaultToSelf = "WorldContextObject"))
-		static void FirstShaderDrawRenderTarget(UObject* WorldContextObject, UTextureRenderTarget2D* OutputRenderTarget, FLinearColor MyColor);
+		static void FirstShaderDrawRenderTarget(UObject* WorldContextObject, UTextureRenderTarget2D* OutputRenderTarget, FLinearColor MyColor, bool UsingRDG=false);
+
 
 // 	UFUNCTION(BlueprintCallable, Category = "ShaderTestPlugin")
 // 		static void DrawTestTextureShaderRenderTarget(AActor* ContextActor,  //�ܻ�ȡWorld��Actor

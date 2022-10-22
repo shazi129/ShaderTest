@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ShaderParameterStruct.h"
 #include "Common/MyGlobalShaderBase.h"
 
 class FFirstShaderVS : public FMyGlobalShaderBase
@@ -14,17 +15,12 @@ public:
 
 class FFirstShaderPS : public FMyGlobalShaderBase
 {
-	DECLARE_SHADER_TYPE(FFirstShaderPS, Global);
-
-private:
-	LAYOUT_FIELD(FShaderParameter, SimpleColorVal);
-
 public:
-	FFirstShaderPS() {}
+	DECLARE_GLOBAL_SHADER(FFirstShaderPS);
 
-	FFirstShaderPS(const ShaderMetaType::CompiledShaderInitializerType& Initializer);
+	SHADER_USE_PARAMETER_STRUCT(FFirstShaderPS, FMyGlobalShaderBase);
 
-	//template<typename TShaderRHIParamRef>
-	void SetColor(FRHICommandListImmediate& RHICmdList, const FPixelShaderRHIRef ShaderRHI, const FLinearColor& MyColor);
-	void SetColor(FRHICommandList& RHICmdList, const FLinearColor& InColor);
+	BEGIN_SHADER_PARAMETER_STRUCT(FParameters, )
+		SHADER_PARAMETER(FVector4f, SimpleColor)
+	END_SHADER_PARAMETER_STRUCT()
 };

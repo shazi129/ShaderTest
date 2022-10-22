@@ -1,11 +1,11 @@
 #include "Common/TestShaderUtils.h"
 
 
-FVertexBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FVector4>& VertexList)
+FBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FVector4>& VertexList)
 {
 	FRHIResourceCreateInfo CreateInfo(TEXT(""));
-	FVertexBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(sizeof(FVector4) * VertexList.Num(), BUF_Volatile, CreateInfo);
-	void* VoidPtr = RHILockVertexBuffer(VertexBufferRHI, 0, sizeof(FVector4) * VertexList.Num(), RLM_WriteOnly);
+	FBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(sizeof(FVector4) * VertexList.Num(), BUF_Volatile, CreateInfo);
+	void* VoidPtr = RHILockBuffer(VertexBufferRHI, 0, sizeof(FVector4) * VertexList.Num(), RLM_WriteOnly);
 
 	FVector4* Vertices = (FVector4*)VoidPtr;
 
@@ -14,11 +14,11 @@ FVertexBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FVector4>&
 		Vertices[i] = VertexList[i];
 	}
 
-	RHIUnlockVertexBuffer(VertexBufferRHI);
+	RHIUnlockBuffer(VertexBufferRHI);
 	return VertexBufferRHI;
 }
 
-FVertexBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FMyTextureVertex>& VertexList)
+FBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FMyTextureVertex>& VertexList)
 {
 	TResourceArray<FMyTextureVertex, VERTEXBUFFER_ALIGNMENT> Vertices;
 	Vertices.SetNumUninitialized(VertexList.Num());
@@ -30,13 +30,13 @@ FVertexBufferRHIRef UTestShaderUtils::CreateVertexBuffer(const TArray<FMyTexture
 
 	// Create vertex buffer. Fill buffer with initial data upon creation
 	FRHIResourceCreateInfo CreateInfo(TEXT(""), &Vertices);
-	FVertexBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(Vertices.GetResourceDataSize(), BUF_Static, CreateInfo);
+	FBufferRHIRef VertexBufferRHI = RHICreateVertexBuffer(Vertices.GetResourceDataSize(), BUF_Static, CreateInfo);
 
 	return VertexBufferRHI;
 }
 
 
-FIndexBufferRHIRef UTestShaderUtils::CreateIndexBuffer(const uint16* Indices, uint16 NumIndices)
+FBufferRHIRef UTestShaderUtils::CreateIndexBuffer(const uint16* Indices, uint16 NumIndices)
 {
 	TResourceArray<uint16, INDEXBUFFER_ALIGNMENT> IndexBuffer;
 
@@ -45,7 +45,7 @@ FIndexBufferRHIRef UTestShaderUtils::CreateIndexBuffer(const uint16* Indices, ui
 
 	// Create index buffer. Fill buffer with initial data upon creation
 	FRHIResourceCreateInfo CreateInfo(TEXT(""), &IndexBuffer);
-	FIndexBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexBuffer.GetResourceDataSize(), BUF_Static, CreateInfo);
+	FBufferRHIRef IndexBufferRHI = RHICreateIndexBuffer(sizeof(uint16), IndexBuffer.GetResourceDataSize(), BUF_Static, CreateInfo);
 
 	return IndexBufferRHI;
 }
