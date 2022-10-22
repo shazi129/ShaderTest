@@ -3,7 +3,7 @@
 #include "FirstShader/FirstShader.h"
 #include "Common/TestShaderUtils.h"
 
-static void ExecuteFirstShader(FRHICommandListImmediate& RHICmdList, ERHIFeatureLevel::Type FeatureLevel, FLinearColor MyColor)
+static void ExecuteFirstShader(FRHICommandList& RHICmdList, ERHIFeatureLevel::Type FeatureLevel, FFirstShaderPS::FParameters* ShaderParamters)
 {
 	// Get shaders.
 	FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
@@ -22,9 +22,7 @@ static void ExecuteFirstShader(FRHICommandListImmediate& RHICmdList, ERHIFeature
 	GraphicsPSOInit.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
 	SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, 0);
 
-	FFirstShaderPS::FParameters Parameters;
-	Parameters.SimpleColor = MyColor;
-	SetShaderParameters(RHICmdList, PixelShader, PixelShader.GetPixelShader(), Parameters);
+	SetShaderParameters(RHICmdList, PixelShader, PixelShader.GetPixelShader(), *ShaderParamters);
 
 	static const uint32 VERTEX_SIZE = sizeof(FVector4f) * 4;
 	FRHIResourceCreateInfo CreateInfo(TEXT("FirstShader"));
@@ -87,7 +85,10 @@ static void FirstShader_RenderThread(
 		// Update viewport.
 		RHICmdList.SetViewport(0, 0, 0.f, DisplacementMapResolution.X, DisplacementMapResolution.Y, 1.f);
 
-		ExecuteFirstShader(RHICmdList, FeatureLevel, MyColor);
+		FFirstShaderPS::FParameters ShaderParameters;
+		ShaderParameters.SimpleColor = MyColor;
+
+		ExecuteFirstShader(RHICmdList, FeatureLevel, &ShaderParameters);
 	}
 
 	RHICmdList.EndRenderPass();
@@ -108,20 +109,15 @@ static void FirstShader_RDG_RenderThread(
 
 	FFirstShaderPS::FParameters* Parameters = GraphBuilder.AllocParameters<FFirstShaderPS::FParameters>();
 	Parameters->SimpleColor = MyColor;
-	//Parameters->RenderTargets[0] = FRenderTargetBinding(RDGRenderTarget, ERenderTargetLoadAction::ENoAction);
-
-	// Get shaders.
-	FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
-	TShaderMapRef<FFirstShaderVS> VertexShader(GlobalShaderMap);
-	TShaderMapRef<FFirstShaderPS> PixelShader(GlobalShaderMap);
+	Parameters->RenderTargets[0] = FRenderTargetBinding(RDGRenderTarget, ERenderTargetLoadAction::ENoAction);
 
 	GraphBuilder.AddPass(
-		RDG_EVENT_NAME("RDGDraw"),
+		RDG_EVENT_NAME("FirstShader_RDG_RenderThread"),
 		Parameters,
 		ERDGPassFlags::Raster,
-		[Parameters, VertexShader, PixelShader, GlobalShaderMap](FRHICommandList& RHICmdList) 
+		[FeatureLevel, Parameters](FRHICommandList& RHICmdList)
 		{
-
+			ExecuteFirstShader(RHICmdList, FeatureLevel, Parameters);
 		});
 
 	GraphBuilder.QueueTextureExtraction(RDGRenderTarget, &PooledRenderTarget);
